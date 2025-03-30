@@ -1,6 +1,6 @@
 # config/experiment_config.yaml
 task: abstract_algebra
-model_path: /content/drive/MyDrive/mslab/RolyPlaying/shared/llama3/1B
+model_path: shared/llama3/1B
 cache_dir: ./data/raw
 output_dir: ./results/complete
 character1: "You are honest"

@@ -13,6 +13,10 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+from huggingface_hub import login
+
+login(token="your token")
+
 def download_model(model_name: str, model_path: str) -> bool:
     cache_dir = os.path.join(os.getcwd(), model_path)
     os.makedirs(cache_dir, exist_ok=True)
@@ -56,14 +60,14 @@ def main():
             "model_name": "meta-llama/Llama-3.2-1B-Instruct",
             "model_path": "shared/llama3/1B"
         },
-        {
-            "model_name": "meta-llama/Llama-3.1-8B-Instruct",
-            "model_path": "shared/llama3/8B"
-        },
-        {
-            "model_name": "meta-llama/Llama-3.2-3B-Instruct",
-            "model_path": "shared/llama3/3B"
-        },
+        #{
+        #    "model_name": "meta-llama/Llama-3.1-8B-Instruct",
+        #    "model_path": "shared/llama3/8B"
+        #},
+        #{
+        #    "model_name": "meta-llama/Llama-3.2-3B-Instruct",
+        #    "model_path": "shared/llama3/3B"
+        #},
     ]
     
     for model_info in models_to_download:

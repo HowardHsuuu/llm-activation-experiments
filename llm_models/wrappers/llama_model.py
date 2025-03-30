@@ -10,6 +10,8 @@ class LlamaModel:
             device = "cuda" if torch.cuda.is_available() else "cpu"
         self.device = device
         self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, tokenizer_class="PreTrainedTokenizer")
+        if self.tokenizer.pad_token is None:
+            self.tokenizer.pad_token = self.tokenizer.eos_token  # 或自行設定新 token，如 "[PAD]"
         self.model = AutoModelForCausalLM.from_pretrained(model_name_or_path)
         self.model.to(self.device)
         self.model.eval()
@@ -22,14 +24,20 @@ class LlamaModel:
         )
 
     def generate(self, prompt, max_tokens=1):
-        inputs = self.tokenizer(prompt, return_tensors="pt").to(self.device)
+        tokens = self.tokenizer(prompt, return_tensors="pt", padding="longest")
+        # 將 input_ids 與 attention_mask 移到模型所在設備
+        input_ids = tokens.input_ids.to(self.model.device)
+        attention_mask = tokens.attention_mask.to(self.model.device)
         output_ids = self.model.generate(
-            inputs.input_ids,
+            input_ids,
+            attention_mask=attention_mask,
             max_new_tokens=max_tokens,
-            eos_token_id=self.tokenizer.eos_token_id
+            eos_token_id=self.tokenizer.eos_token_id,
+            pad_token_id=self.tokenizer.pad_token_id,
         )
+        # 解碼時只取新增的 token 部分
         generated = self.tokenizer.decode(
-            output_ids[0][len(inputs.input_ids[0]):],
+            output_ids[0][len(input_ids[0]):],
             skip_special_tokens=True
         )
         return generated

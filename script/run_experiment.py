@@ -2,7 +2,7 @@
 import argparse
 import numpy as np
 import os, sys
-sys.path.append(os.path.abspath("/content/drive/MyDrive/mslab/Activation-Experiment"))
+sys.path.append(os.path.abspath("C:/Users/hsuch/OneDrive/桌面/llm-activation-experiments"))
 from llm_models.wrappers.llama_model import LlamaModel
 from evaluation.dataset.mmlu import MMLUDataset
 from evaluation.hidden_states import extract_hidden_states
