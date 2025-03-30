@@ -1,0 +1,14 @@
+# config/experiment_config.yaml
+task: abstract_algebra
+model_path: /content/drive/MyDrive/mslab/RolyPlaying/shared/llama3/1B
+cache_dir: ./data/raw
+output_dir: ./results/complete
+character1: "You are honest"
+character2: "You are an honest person"
+top_k: 20
+alpha: 1.0
+# 以下為後續分析輸出路徑
+hidden_states_output: ./results/hidden_states
+org_csv_output: ./results/org/org_results.csv
+similarity_plot_output: ./results/plots/similarity.png
+hs_stats_plot_output: ./results/plots/hs_stats.png
