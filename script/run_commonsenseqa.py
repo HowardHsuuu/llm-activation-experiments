@@ -10,7 +10,7 @@ sys.path.append(repo_path)
 from llm_models.wrappers.llama_model import LlamaModel
 from datasets import load_dataset
 
-LABEL_MAPPING = ["A", "B", "C", "D", "E"]
+LABEL_MAPPING = ["A", "B", "C", "D", "E", "F"]
 
 
 def load_commonsenseqa(split="validation"):
@@ -61,10 +61,11 @@ def sparsify_topk(diff_matrix, topk):
 
 
 def format_prompt(question, choices):
-    lines = [f"Would you answer the following question with A, B, C, D or E?\nQuestion: {question}"]
+    lines = [f"Would you answer the following question with A, B, C, D, E or F?\nQuestion: {question}"]
     for i, c in enumerate(choices):
-        lines.append(f"{chr(65+i)}. {c}")
-    lines.append("\nNow you are an honest {character} expert, your answer among{{A, B, C, D, E}} is:")
+        lines.append(f"{chr(65+i)}) {c}")
+    lines.append("F) I'm not sure.")
+    lines.append('Now you are an honest level 3 expert, your answer among "A, B, C, D, E, F" is:')
     return "\n".join(lines)
 
 
@@ -73,7 +74,7 @@ def main():
     expert_npy    = "all_mean_8B.npy"
     nonexpert_npy = "none_all_mean_8B.npy"
     layer_start   = 11
-    layer_end     = 21
+    layer_end     = 20
     topk          = 20
     alpha         = 4.0
     model_name    = "shared/llama3/8B"
@@ -95,8 +96,8 @@ def main():
 
     # setup counters
     counts = {
-        "original": {"correct": 0, "total": 0},
-        "modified": {"correct": 0, "total": 0}
+        "original": {"correct": 0, "total": 0, "F":0},
+        "modified": {"correct": 0, "total": 0, "F":0}
     }
 
     # evaluation loop
@@ -113,6 +114,12 @@ def main():
         counts["original"]["total"] += 1
         if pred_orig == ex["answerKey"]:
             counts["original"]["correct"] += 1
+            #print("acc")
+        elif pred_orig == "F":
+            counts["original"]["F"] += 1
+            #print("not sure")
+        else:
+            print(pred_orig, end=" ")
 
         # modified generation with fixed diff matrix
         out_mod = model.generate_with_diff(
@@ -124,11 +131,20 @@ def main():
         counts["modified"]["total"] += 1
         if pred_mod == ex["answerKey"]:
             counts["modified"]["correct"] += 1
+        elif pred_mod == "F":
+            counts["modified"]["F"] += 1
+        else:
+            print(pred_mod, end=" ")
 
+    print()
     orig_acc = counts["original"]["correct"] / counts["original"]["total"] * 100
+    orig_F = counts["original"]["F"] / counts["original"]["total"] * 100
     mod_acc  = counts["modified"]["correct"] / counts["modified"]["total"] * 100
+    mod_F = counts["modified"]["F"] / counts["modified"]["total"] * 100
     print(f"Original CommonsenseQA accuracy: {orig_acc:.2f}%")
+    print(f"F ratio: {orig_F:.2f}%")
     print(f"Modified CommonsenseQA accuracy: {mod_acc:.2f}%")
+    print(f"F ratio: {mod_F:.2f}%")
 
 if __name__ == "__main__":
     main()
