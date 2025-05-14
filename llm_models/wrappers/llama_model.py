@@ -23,7 +23,7 @@ class LlamaModel:
             '{character}, your answer among "A, B, C, D, E" is: '
         )
 
-    def generate(self, prompt, max_tokens=1):
+    def generate2(self, prompt, max_tokens=1):
         tokens = self.tokenizer(prompt, return_tensors="pt", padding="longest")
         # 將 input_ids 與 attention_mask 移到模型所在設備
         input_ids = tokens.input_ids.to(self.model.device)
@@ -43,6 +43,30 @@ class LlamaModel:
             skip_special_tokens=True
         )
         return generated
+
+    def generate(self, prompt, max_tokens=1):
+        tokens = self.tokenizer(prompt, return_tensors="pt", padding="longest")
+        # 將 input_ids 與 attention_mask 移到模型所在設備
+        input_ids = tokens.input_ids.to(self.model.device)
+        attention_mask = tokens.attention_mask.to(self.model.device)
+        output_ids = self.model.generate(
+            input_ids,
+            attention_mask=attention_mask,
+            max_new_tokens=max_tokens,
+            eos_token_id=self.tokenizer.eos_token_id,
+            pad_token_id=self.tokenizer.pad_token_id,
+            do_sample=False,
+            # temperature=0,
+        )
+        # 解碼時只取新增的 token 部分
+        generated = self.tokenizer.decode(
+            output_ids[0][len(input_ids[0]):],
+            skip_special_tokens=True
+        )
+        # return generated
+        if generated.strip().upper() not in ["A", "B", "C", "D", "E", "F"]:
+            generated = self.generate2(prompt, max_tokens=20)
+        return self.clean_answer(generated)
 
     def generate_answer(self, context, character="", model_type="llama3"):
         prompt = self.template.format(context=context, character=character)
@@ -70,5 +94,5 @@ class LlamaModel:
 
     @staticmethod
     def clean_answer(answer):
-        match = re.search(r"\b([A-E])\b", answer.upper())
+        match = re.search(r"\b([A-F])\b", answer.upper())
         return match.group(1) if match else answer.strip().upper()

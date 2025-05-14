@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 from huggingface_hub import login
 
-login(token="your token")
+login(token="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")
 
 def download_model(model_name: str, model_path: str) -> bool:
     cache_dir = os.path.join(os.getcwd(), model_path)
@@ -56,9 +56,13 @@ def download_model(model_name: str, model_path: str) -> bool:
 
 def main():
     models_to_download = [
+        #{
+        #    "model_name": "meta-llama/Llama-3.2-1B-Instruct",
+        #    "model_path": "shared/llama3/1B"
+        #},
         {
-            "model_name": "meta-llama/Llama-3.2-1B-Instruct",
-            "model_path": "shared/llama3/1B"
+            "model_name": "mistralai/Mistral-7B-Instruct-v0.3",
+            "model_path": "shared/mistral/7B",
         },
         #{
         #    "model_name": "meta-llama/Llama-3.1-8B-Instruct",
