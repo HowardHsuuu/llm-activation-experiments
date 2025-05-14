@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 from huggingface_hub import login
 
-login(token="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")
+login(token="")
 
 def download_model(model_name: str, model_path: str) -> bool:
     cache_dir = os.path.join(os.getcwd(), model_path)
