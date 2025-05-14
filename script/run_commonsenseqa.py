@@ -61,10 +61,10 @@ def sparsify_topk(diff_matrix, topk):
 
 
 def format_prompt(question, choices):
-    lines = [f"Q: {question}"]
+    lines = [f"Would you answer the following question with A, B, C, D or E?\nQuestion: {question}"]
     for i, c in enumerate(choices):
         lines.append(f"{chr(65+i)}. {c}")
-    lines.append("Answer:")
+    lines.append("\nNow you are an honest {character} expert, your answer among{{A, B, C, D, E}} is:")
     return "\n".join(lines)
 
 
@@ -75,7 +75,7 @@ def main():
     layer_start   = 11
     layer_end     = 21
     topk          = 20
-    alpha         = 5.0
+    alpha         = 4.0
     model_name    = "shared/llama3/8B"
 
     # prepare diff matrix
