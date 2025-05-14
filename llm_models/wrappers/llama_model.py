@@ -34,6 +34,8 @@ class LlamaModel:
             max_new_tokens=max_tokens,
             eos_token_id=self.tokenizer.eos_token_id,
             pad_token_id=self.tokenizer.pad_token_id,
+            do_sample=False,
+            temperature=0,
         )
         # 解碼時只取新增的 token 部分
         generated = self.tokenizer.decode(

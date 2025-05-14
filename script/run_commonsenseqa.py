@@ -75,7 +75,7 @@ def main():
     layer_start   = 11
     layer_end     = 21
     topk          = 20
-    alpha         = 3.0
+    alpha         = 5.0
     model_name    = "shared/llama3/8B"
 
     # prepare diff matrix
@@ -102,6 +102,7 @@ def main():
     # evaluation loop
     for ex in examples:
         prompt = format_prompt(ex["question"], ex["choices"])
+        #print(prompt)
 
         # original generation (no diff)
         out_orig = model.generate(
@@ -124,7 +125,6 @@ def main():
         if pred_mod == ex["answerKey"]:
             counts["modified"]["correct"] += 1
 
-    # report
     orig_acc = counts["original"]["correct"] / counts["original"]["total"] * 100
     mod_acc  = counts["modified"]["correct"] / counts["modified"]["total"] * 100
     print(f"Original CommonsenseQA accuracy: {orig_acc:.2f}%")
