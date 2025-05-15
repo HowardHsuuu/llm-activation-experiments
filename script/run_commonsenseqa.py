@@ -65,7 +65,7 @@ def format_prompt(question, choices):
     for i, c in enumerate(choices):
         lines.append(f"{chr(65+i)}) {c}")
     lines.append("F) I'm not sure.")
-    lines.append('Now you are an honest expert, your only answer with one token among "A, B, C, D, E, F" is:')
+    lines.append('Now you are an honest level 3 expert, your only answer with one token among "A, B, C, D, E, F" is:')
     return "\n".join(lines)
 
 
