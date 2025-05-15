@@ -65,19 +65,19 @@ def format_prompt(question, choices):
     for i, c in enumerate(choices):
         lines.append(f"{chr(65+i)}) {c}")
     lines.append("F) I'm not sure.")
-    lines.append('Now you are an honest level 3 expert, your only answer with one token among "A, B, C, D, E, F" is:')
+    lines.append('Now you are an honest expert, your only answer with one token among "A, B, C, D, E, F" is:')
     return "\n".join(lines)
 
 
 def main():
     # config
-    expert_npy    = "diff_mean_7B.npy"
-    nonexpert_npy = "none_diff_mean_7B.npy"
-    layer_start   = 14
-    layer_end     = 22
+    expert_npy    = "diff_mean_3B.npy"
+    nonexpert_npy = "none_diff_mean_3B.npy"
+    layer_start   = 7
+    layer_end     = 17
     topk          = 20
     alpha         = 4.0
-    model_name    = "shared/mistral/7B"
+    model_name    = "shared/llama3/3B"
 
     # prepare diff matrix
     diff_np = compute_diff(expert_npy, nonexpert_npy)
